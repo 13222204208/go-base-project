@@ -1,0 +1,3 @@
+{"client_ip":"127.0.0.1","latency_time":4000200,"level":"info","msg":"","req_method":"POST","req_uri":"/web/login","status_code":200,"time":"2021-04-01 11:08:15"}
+{"client_ip":"127.0.0.1","latency_time":3000100,"level":"info","msg":"","req_method":"POST","req_uri":"/web/login","status_code":200,"time":"2021-04-01 11:12:30"}
+{"client_ip":"127.0.0.1","latency_time":1000000,"level":"info","msg":"","req_method":"POST","req_uri":"/web/login","status_code":200,"time":"2021-04-01 11:17:14"}
