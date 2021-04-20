@@ -22,29 +22,16 @@ func User(c *gin.Context) {
 
 type Users struct {
 	Name   string `form:"name" json:"name" validate:"required" label:"姓名"`
-	Age    uint8  `form:"age" json:"age" validate:"required,gt=18" label:"年龄"`
+	Age    uint8  `form:"age" json:"age" validate:"required,gt=18,lt=128" label:"年龄"`
 	Passwd string `form:"passwd" json:"passwd" validate:"max=20,min=6" label:"密码"`
 	Code   string `form:"code" json:"code" validate:"required,len=6" label:"验证码"`
 }
 
 func UserLogin(c *gin.Context) {
 	var logins Users
-	/* 	   	logins.Name = c.PostForm("name")
-	   	   	logins.Passwd = c.PostForm("passwd")
+	returnData := result.NewResult(c)
 
-	   	   	logins.Code = c.PostForm("code")  */
-	//data := c.ShouldBind(&logins)
-	fmt.Println(logins)
-	/* 	c.Request.ParseMultipartForm(128) //保存表单缓存的内存大小128M
-	   	logins := c.Request.Form
-	   	fmt.Println(logins)
-	   	result.NewResult(c).Success(logins) */
-
-	/* 	users := &Users{
-		Name:   "test",
-		Age:    12,
-		Passwd: "123",
-	} */
+	erra := c.ShouldBind(&logins)
 	uni := ut.New(zh.New())
 	trans, _ := uni.GetTranslator("zh")
 	validate := validator.New()
@@ -64,6 +51,15 @@ func UserLogin(c *gin.Context) {
 			result.NewResult(c).Error(err.Translate(trans))
 			return
 		}
+	}
+
+	if erra == nil {
+
+		returnData.Success(logins)
+		return
+	} else {
+		returnData.Error("error")
+		return
 	}
 
 }

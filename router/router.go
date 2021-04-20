@@ -1,12 +1,13 @@
 package router
 
 import (
-	minapp "firstProject/app/http/controller/api"
-	admin "firstProject/app/http/controller/web"
+	admin "firstProject/app/http/controller/admin"
+	minapp "firstProject/app/http/controller/minapp"
 	"firstProject/app/http/middleware/cors"
 	"firstProject/app/http/middleware/handler"
 	"firstProject/app/http/middleware/logger"
 	"firstProject/app/http/result"
+	"firstProject/pkg/e"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,7 @@ func InitRouter() {
 	web := router.Group("web")
 	{
 		web.GET("user", admin.User)
+		web.POST("register", e.ErrorWrapper(admin.RegisterHandle))
 		web.POST("login", admin.UserLogin)
 	}
 
@@ -37,5 +39,4 @@ func InitRouter() {
 //404
 func HandleNotFound(c *gin.Context) {
 	result.NewResult(c).Error("路径或方法错误")
-	return
 }
