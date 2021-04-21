@@ -30,7 +30,7 @@ func InitRouter() {
 	{
 		web.GET("user", admin.User)
 		web.POST("register", e.ErrorWrapper(admin.RegisterHandle))
-		web.POST("login", admin.UserLogin)
+		web.POST("login", admin.AdminLogin)
 	}
 
 	router.Run()

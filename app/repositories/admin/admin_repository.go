@@ -16,3 +16,11 @@ func CreateAdmin(dto dto.AdminDto) error {
 
 	return err
 }
+
+//GetUserByUsername 通过用户名查询用户
+func GetAdminByUsername(username string) models.Admin {
+	user := models.Admin{}
+	database.DB.Where("username = ?", username).First(&user)
+
+	return user
+}
