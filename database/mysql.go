@@ -11,7 +11,7 @@ var DB *gorm.DB
 
 func init() {
 	var err error
-	DB, err = gorm.Open("mysql", "root:xdlphp121@tcp(129.226.160.124:3306)/test?charset=utf8&loc=Local&parseTime=true")
+	DB, err = gorm.Open("mysql", "root:xdlphp121@tcp(129.226.160.124:3306)/moma?charset=utf8&loc=Local&parseTime=true")
 	if err != nil {
 		fmt.Printf("mysql connect error %v", err)
 	}

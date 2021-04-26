@@ -12,10 +12,12 @@ type Admin struct {
 	gorm.Model
 	Username string
 	Password string
+	Name     string
+	Avatar   string `gorm:"default:https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"`
+	Phone    string
 }
 
 func Register(username string, password string) error {
-
 	//database.DB.AutoMigrate(&Admin{})
 	database.DB.Where("name = ?", username).First(&Admin{})
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) //加密处理

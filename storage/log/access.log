@@ -65,3 +65,13 @@ time="2021-04-21T15:33:16+08:00" level=info client_ip=127.0.0.1 latency_time=229
 time="2021-04-21T15:33:21+08:00" level=info client_ip=127.0.0.1 latency_time=209.0119ms req_method=POST req_uri=/web/login status_code=200
 time="2021-04-21T15:33:26+08:00" level=info client_ip=127.0.0.1 latency_time=102.0059ms req_method=POST req_uri=/web/login status_code=200
 time="2021-04-21T15:33:31+08:00" level=info client_ip=127.0.0.1 latency_time=204.0117ms req_method=POST req_uri=/web/login status_code=200
+time="2021-04-22T11:01:08+08:00" level=info client_ip="::1" latency_time=0s req_method=GET req_uri=/api/test status_code=200
+time="2021-04-22T11:01:09+08:00" level=info client_ip="::1" latency_time=0s req_method=GET req_uri=/favicon.ico status_code=200
+time="2021-04-22T11:01:55+08:00" level=info client_ip=127.0.0.1 latency_time=0s req_method=GET req_uri=/api/test status_code=200
+time="2021-04-22T11:03:54+08:00" level=info client_ip=127.0.0.1 latency_time=313.0179ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:04:12+08:00" level=info client_ip=127.0.0.1 latency_time=409.0234ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:04:25+08:00" level=info client_ip=127.0.0.1 latency_time=400.0229ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:09:29+08:00" level=info client_ip=127.0.0.1 latency_time=102.0058ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:14:18+08:00" level=info client_ip=127.0.0.1 latency_time=105.006ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:14:39+08:00" level=info client_ip=127.0.0.1 latency_time=397.0227ms req_method=POST req_uri=/web/register status_code=200
+time="2021-04-22T11:15:37+08:00" level=info client_ip=127.0.0.1 latency_time=99.0056ms req_method=POST req_uri=/web/register status_code=200

@@ -58,17 +58,19 @@ type JWT struct {
 var (
 	TokenExpired     error  = errors.New("Token is expired")
 	TokenNotValidYet error  = errors.New("Token not active yet")
-	TokenMalformed   error  = errors.New("That's not even a token")
+	TokenMalformed   error  = errors.New("token错误")
 	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = "newtrekWang"
+	SignKey          string = "yangpanda"
 )
 
 // 载荷，可以加一些自己需要的信息
 type CustomClaims struct {
-	ID    uint `json:"userId"`
-	Username  string `json:"username"`
-	Password string `json:"password"`
-	jwt.StandardClaims
+	ID                 uint   `json:"id"`
+	Username           string `json:"username"`
+	Name               string `json:"name"`
+	Phone              string `json:"phone"`
+	Avatar             string `json:"avatar"`
+	jwt.StandardClaims `json:"-"`
 }
 
 // 新建一个jwt实例

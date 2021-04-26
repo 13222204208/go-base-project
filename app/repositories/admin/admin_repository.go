@@ -11,7 +11,8 @@ func CreateAdmin(dto dto.AdminDto) error {
 	admin := models.Admin{}
 	admin.Username = dto.Username
 	admin.Password = dto.Password
-
+	admin.Name = dto.Name
+	admin.Phone = dto.Phone
 	err := database.DB.Create(&admin).Error
 
 	return err

@@ -5,9 +5,10 @@ import (
 	minapp "firstProject/app/http/controller/minapp"
 	"firstProject/app/http/middleware/cors"
 	"firstProject/app/http/middleware/handler"
-	"firstProject/app/http/middleware/logger"
+	"firstProject/app/http/middleware/jwt"
+
+	//"firstProject/app/http/middleware/logger"
 	"firstProject/app/http/result"
-	"firstProject/pkg/e"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func InitRouter() {
 	router.NoRoute(HandleNotFound)
 	router.NoMethod(HandleNotFound)
 	router.Use(handler.Recover)
-	router.Use(logger.LogerMiddleware())
+	//router.Use(logger.LogerMiddleware())
 	// 要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404
 	router.Use(cors.Cors())
 	api := router.Group("api")
@@ -26,11 +27,15 @@ func InitRouter() {
 		api.GET("/test", minapp.Ping)
 	}
 
-	web := router.Group("web")
+	web := router.Group("admin")
+	{
+		web.POST("login", admin.AdminLogin)
+		web.POST("register", admin.RegisterHandle)
+	}
+	web.Use(jwt.JWTAuth())
 	{
 		web.GET("user", admin.User)
-		web.POST("register", e.ErrorWrapper(admin.RegisterHandle))
-		web.POST("login", admin.AdminLogin)
+		web.GET("info", admin.Info)
 	}
 
 	router.Run()

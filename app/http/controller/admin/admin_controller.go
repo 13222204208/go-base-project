@@ -9,12 +9,17 @@ import (
 	"firstProject/app/requests"
 	"firstProject/app/services/admin"
 	"fmt"
+	"reflect"
 
 	"net/http"
 	"time"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -63,28 +68,57 @@ func Register(c *gin.Context) {
 } */
 
 //RegisterHandle 注册
-func RegisterHandle(c *gin.Context) (interface{}, error) {
+func RegisterHandle(c *gin.Context) {
 	request := requests.AdminRegisterRequest{}
 	returnData := result.NewResult(c)
-	err := c.ShouldBind(&request)
+
+	erra := c.ShouldBind(&request)
+
+	uni := ut.New(zh.New())
+	trans, _ := uni.GetTranslator("zh")
+	validate := validator.New()
+
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := fld.Tag.Get("label")
+		return name
+	})
+	//验证器注册翻译器
+	err := zh_translations.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
+		fmt.Println(err)
+	}
+	err = validate.Struct(request)
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			result.NewResult(c).Error(err.Translate(trans))
+			return
+		}
+	}
+
+	if erra != nil {
 		fmt.Println(err)
 	}
 
 	userDto := dto.AdminDto{
 		Username: request.Username,
 		Password: request.Password,
+		Name:     request.Name,
+		Phone:    request.Phone,
 	}
 
+	model := adminRep.GetAdminByUsername(userDto.Username)
+	if model.ID != 0 {
+		returnData.Error("用户名重复")
+		return
+	}
 	service := admin.AdminService{}
 	err = service.Register(userDto)
 	if err != nil {
-
-		returnData.Error("注册失败" + err.Error())
-
+		returnData.Error("注册失败：" + err.Error())
+		return
 	}
 
-	return "注册成功", nil
+	returnData.Success("注册成功")
 }
 
 func AdminLogin(c *gin.Context) {
@@ -117,16 +151,18 @@ func AdminLogin(c *gin.Context) {
 // 生成令牌
 func generateToken(c *gin.Context, user models.Admin) {
 	j := &myjwt.JWT{
-		[]byte("newtrekWang"),
+		[]byte("yangpanda"),
 	}
 	claims := myjwt.CustomClaims{
 		user.ID,
 		user.Username,
-		user.Password,
+		user.Name,
+		user.Phone,
+		user.Avatar,
 		jwtgo.StandardClaims{
-			NotBefore: int64(time.Now().Unix() - 1000),     // 签名生效时间
-			ExpiresAt: int64(time.Now().Unix() + 36000000), // 过期时间 一小时
-			Issuer:    "newtrekWang",                       //签名的发行者
+			NotBefore: int64(time.Now().Unix() - 1000),   // 签名生效时间
+			ExpiresAt: int64(time.Now().Unix() + 360000), // 过期时间 一小时
+			Issuer:    "yangpanda",                       //签名的发行者
 		},
 	}
 	returnData := result.NewResult(c)
@@ -145,13 +181,13 @@ func generateToken(c *gin.Context, user models.Admin) {
 }
 
 // GetDataByTime 一个需要token认证的测试接口
-/* func GetDataByTime(c *gin.Context) {
+func Info(c *gin.Context) {
 	claims := c.MustGet("claims").(*myjwt.CustomClaims)
+
+	returnData := result.NewResult(c)
 	if claims != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status": 0,
-			"msg":    "token有效",
-			"data":   claims,
-		})
+		returnData.Success(claims)
+		return
 	}
-} */
+	returnData.Error("解析token错误")
+}
