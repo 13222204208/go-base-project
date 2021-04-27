@@ -15,6 +15,9 @@ type Admin struct {
 	Name     string
 	Avatar   string `gorm:"default:https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"`
 	Phone    string
+	//CreatedAt string `json:"created_at"`
+	//UpdatedAt string `json:"updated_at"`
+	//DeletedAt string `json:"deleted_at"`
 }
 
 func Register(username string, password string) error {

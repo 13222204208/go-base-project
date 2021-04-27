@@ -25,3 +25,7 @@ func GetAdminByUsername(username string) models.Admin {
 
 	return user
 }
+
+/* func AdminList(username string, page , limit int) models.Admin{
+
+} */

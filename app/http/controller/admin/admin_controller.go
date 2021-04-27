@@ -8,8 +8,10 @@ import (
 	adminRep "firstProject/app/repositories/admin"
 	"firstProject/app/requests"
 	"firstProject/app/services/admin"
+	"firstProject/database"
 	"fmt"
 	"reflect"
+	"strconv"
 
 	"net/http"
 	"time"
@@ -148,8 +150,13 @@ func AdminLogin(c *gin.Context) {
 	generateToken(c, model)
 }
 
+type Xtoken struct {
+	Token string `json:"token"`
+}
+
 // 生成令牌
 func generateToken(c *gin.Context, user models.Admin) {
+	var mytoken Xtoken
 	j := &myjwt.JWT{
 		[]byte("yangpanda"),
 	}
@@ -175,8 +182,8 @@ func generateToken(c *gin.Context, user models.Admin) {
 		})
 		return
 	}
-
-	returnData.Success(token)
+	mytoken.Token = token
+	returnData.Success(mytoken)
 
 }
 
@@ -190,4 +197,38 @@ func Info(c *gin.Context) {
 		return
 	}
 	returnData.Error("解析token错误")
+}
+
+func Logout(c *gin.Context) {
+	returnData := result.NewResult(c)
+	returnData.Success("logout ok")
+}
+
+func List(c *gin.Context) {
+	returnData := result.NewResult(c)
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	user := make([]models.Admin, 0)
+	database.DB.Limit(limit).Offset((page - 1) * limit).Find(&user)
+	var data struct {
+		Item  []models.Admin `json:"item"`
+		Total int            `json:"total"`
+	}
+
+	data.Item = user
+	data.Total = 3
+	returnData.Success(data)
+}
+
+func DeleteAdmin(c *gin.Context) {
+	returnData := result.NewResult(c)
+	id := c.Param("id")
+	model := database.DB.Delete(&models.Admin{}, id)
+
+	if model.Error == nil {
+		returnData.Success("删除成功")
+		return
+	}
+
+	returnData.Error("删除失败")
 }

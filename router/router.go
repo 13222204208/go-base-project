@@ -30,12 +30,14 @@ func InitRouter() {
 	web := router.Group("admin")
 	{
 		web.POST("login", admin.AdminLogin)
-		web.POST("register", admin.RegisterHandle)
+		web.POST("admin", admin.RegisterHandle) //注册后台用户
 	}
 	web.Use(jwt.JWTAuth())
 	{
-		web.GET("user", admin.User)
+		web.GET("admin", admin.List)
+		web.DELETE("admin/:id", admin.DeleteAdmin)
 		web.GET("info", admin.Info)
+		web.POST("logout", admin.Logout)
 	}
 
 	router.Run()
