@@ -208,15 +208,16 @@ func List(c *gin.Context) {
 	returnData := result.NewResult(c)
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
-	user := make([]models.Admin, 0)
+	user := make([]models.Admin, 10)
 	database.DB.Limit(limit).Offset((page - 1) * limit).Find(&user)
+	result := database.DB.Find(&user)
 	var data struct {
 		Item  []models.Admin `json:"item"`
 		Total int            `json:"total"`
 	}
 
 	data.Item = user
-	data.Total = 3
+	data.Total = int(result.RowsAffected)
 	returnData.Success(data)
 }
 
@@ -231,4 +232,41 @@ func DeleteAdmin(c *gin.Context) {
 	}
 
 	returnData.Error("删除失败")
+}
+
+func UpdateAdminPassword(c *gin.Context) {
+	claims := c.MustGet("claims").(*myjwt.CustomClaims)
+	var admin models.Admin
+	returnData := result.NewResult(c)
+	if claims != nil {
+		model := database.DB.First(&admin, claims.ID)
+
+		oldPassword := c.Query("oldPassword")
+
+		erra := bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(oldPassword))
+
+		if erra != nil {
+			returnData.Error("原始密码错误")
+			return
+		}
+
+		if model.Error == nil {
+			password := c.Query("password")
+			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) //加密处理
+
+			if err != nil {
+				fmt.Println(err)
+			}
+			encodePWD := string(hash)
+			admin.Password = encodePWD
+			errs := database.DB.Save(&admin)
+			if errs.Error == nil {
+				returnData.Success("成功")
+				return
+			}
+
+		}
+
+	}
+	returnData.Error("修改失败")
 }

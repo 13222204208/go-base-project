@@ -36,8 +36,14 @@ func InitRouter() {
 	{
 		web.GET("admin", admin.List)
 		web.DELETE("admin/:id", admin.DeleteAdmin)
+		web.PATCH("admin/:id", admin.UpdateAdminPassword)
 		web.GET("info", admin.Info)
 		web.POST("logout", admin.Logout)
+		web.POST("goods_type", admin.CreateGoodsType)
+		web.GET("goods_type", admin.GoodsTypeList)
+		web.GET("goods_type/:id/edit", admin.OneGoodsType)
+		web.PATCH("goods_type/:id", admin.UpdateGoodsType)
+		web.DELETE("goods_type/:id", admin.DeleteGoodsType)
 	}
 
 	router.Run()
