@@ -31,6 +31,7 @@ func InitRouter() {
 	{
 		web.POST("login", admin.AdminLogin)
 		web.POST("admin", admin.RegisterHandle) //注册后台用户
+		web.POST("upload/img", admin.UploadImg) //图片上传
 	}
 	web.Use(jwt.JWTAuth())
 	{
@@ -44,6 +45,8 @@ func InitRouter() {
 		web.GET("goods_type/:id/edit", admin.OneGoodsType)
 		web.PATCH("goods_type/:id", admin.UpdateGoodsType)
 		web.DELETE("goods_type/:id", admin.DeleteGoodsType)
+
+		web.GET("goods", admin.GoodsList)
 	}
 
 	router.Run()
